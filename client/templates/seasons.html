@@ -1,0 +1,310 @@
+{% extends "_layout.html"%}
+
+{% block tittle %} Agriculture Seasons {% endblock %}
+
+{% block style %}
+    <style type="text/css">
+        .button {
+            border: none;
+            background: #1EBA38;
+            cursor: pointer;
+            border-radius: 3px;
+            padding: 16px;
+            width: 40%;
+            font-size: 100%;
+            color: white;
+            margin-top: 30px;
+            box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+          }
+          .button:hover {
+            -webkit-transform: translateY(-3px);
+            -ms-transform: translateY(-3px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
+          }
+    </style>
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='js/RangeSlider-all/RangeSlider-all.min.css') }}">
+
+<!--     <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style> -->
+
+    {% endblock %}
+
+    {% block pagecontent %}
+    <div class="row">
+        <div style="width: 70%; margin: 0 auto;">
+            {% for item in items %}
+            <div class="row">
+                <div><!-- <div style="width: 95%; margin: 0 auto;"> -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-caption">Chart in {{items[item]['name']}} </h3>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main ">
+                                <div class="tabbable">
+                                    <ul class="nav nav-tabs tabs-flat" >
+                                        <li>
+                                            <a data-toggle="tab" href="#" id="{{item}}downNode">
+                                                Download excel file
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content tabs-flat">
+                                        <canvas id="canvas_{{item}}"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br></br>
+                        </div>
+                    </div>
+                    {% else %}
+                    did not iterate
+                    {% endfor %}
+                </div>
+                <!-- /Page Body -->
+            </div>
+
+
+            <div class="jumbotron container" style="text-align: center;">
+                <h1>All database of this season</h1>
+                <p> JSON File:    <button id="downloadjson" class="button" type="Submit">DOWNLOAD </button></p>
+                <p>Excel File:    <button id="downloadcsv" class="button" type="Submit">DOWNLOAD </button></p>
+            </div>
+
+            <!-- End body html -->
+            {% endblock %}
+
+            {% block script %}
+            <script src="{{ url_for('static', filename='js/RangeSlider-all/RangeSlider-all.min.js') }}"></script>
+
+            <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+            <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+            <script src="{{ url_for('static', filename='js/Chart.bundle.js') }}"></script>
+            <script src="{{ url_for('static', filename='js/utils.js') }}"> </script>
+            <script>
+                var colorselect = ["red","blue","green","black"];
+                function datasetsLine (label ,data, colorselect) {
+                    var color = Chart.helpers.color;
+                    switch (colorselect){
+                        case "blue": chartColor = window.chartColors.blue;
+                        break;
+                        case "green": chartColor = window.chartColors.green;
+                        break;
+                        case "red": chartColor = window.chartColors.red;
+                        break;
+                        case "black": chartColor = window.chartColors.black;
+                        break;
+                        default: break;
+                    }
+                    return {
+                        type: 'line',
+                        label: label,
+                        backgroundColor: color(chartColor).alpha(0.01).rgbString(),
+                        borderColor: color(chartColor).alpha(0.9).rgbString(),
+                        data: data
+                    }
+                }
+
+                $.post( "/api/getalldata/{{season}}", function( data ) {        
+
+                    console.log(data.results);
+
+                    var color = Chart.helpers.color;
+
+                    dataset = (Node, sensor) => {
+                        var dataResults = data.results[Node].payload;
+                        var datasetReturn = [];
+                        for (var i = 0; i < sensor.length; i++) {
+                            datasetReturn[i] = datasetsLine(dataResults[sensor[i]].name, dataResults[sensor[i]].payload.value, colorselect[i]);
+                        }
+                        return datasetReturn;
+                    };
+
+                    options = {
+                        scaleBeginAtZero: true,
+                        tooltipTemplate: "ewff",
+                        label: 'test',
+                        scales: {
+                            xAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Time'
+                                }
+                            }],
+                            yAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Value'
+                                }
+                            }]
+                        }
+                    };  
+
+                    {% for node in items %}
+
+                    var barChartData{{node}} = {
+                        labels: data.results['{{node}}'].time,
+                        datasets: dataset("{{node}}",Object.keys(data.results['{{node}}'].payload))
+                    };
+
+
+                    var ctx{{node}} = document.getElementById("canvas_{{node}}").getContext("2d");
+                    myLine{{node}} = new RangeSliderChart({
+
+                        chartData: barChartData{{node}},
+                        chartOpts: options,
+                        chartType: 'line',
+                        chartCTX: ctx{{node}},
+                        class: 'my-chart-ranger',
+
+                        initial: [0, 20]
+                    });
+
+                    $('#{{node}}downNode').click(function(){
+                        var aa = ['Time'];
+                        var dataraw = [barChartData{{node}}.labels];
+
+                        barChartData{{node}}.datasets.forEach(function(dataset) {
+                            aa.push(dataset.label);
+                            dataraw = dataraw.concat([dataset.data]);
+                        });
+
+                        var A = [['{{node}}'],aa];
+                        var Adata = [];
+                        for (var i = 0; i < dataraw[0].length; i++) {
+                            var adata = [];
+                            dataraw.forEach(function(data){
+                                adata.push(data[i]);
+                            });
+                            Adata = Adata.concat([adata]);
+                            delete adata;
+                        };
+
+                        bigArray = A.concat(Adata);
+                        console.log(A);
+
+                        var csvContent = "data:text/csv;charset=utf-8,";
+                        bigArray.forEach(function(infoArray, index){
+
+                           dataString = infoArray.join(",");
+                           csvContent += index < bigArray.length ? dataString+ "\n" : dataString;
+
+                        }); 
+
+                        var encodedUri = encodeURI(csvContent);
+                        var link = document.createElement("a");
+                        link.setAttribute("href", encodedUri);
+                        link.setAttribute("download", "{{node}}.csv");
+                        document.body.appendChild(link); // Required for FF
+
+                        link.click(); // This will download the data file named "my_data.csv".
+                    });
+
+                    {% endfor %}
+
+                });
+                
+                $('#downloadjson').click(function(){
+                    $.post( "/api/getdatajson/{{season}}", function( data ) {     
+
+                        var dat = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data.results));
+                        var a = document.createElement('a');
+                        a.href = 'data:' + dat;
+                        a.download = '{{season}}.json';
+                        a.click();
+
+                    });
+                });
+
+                $('#downloadcsv').click(function(){
+                    
+
+                    $.post( "/api/getdatajson/{{season}}", function( importantDatas ) {     
+                    
+                    $.post( "/api/newsampledata/{{season}}", function( newsampledata ) {     
+                    
+                        var listNode = Object.keys(newsampledata.results),
+                            listSensor = [];
+
+                        for (var i = 0; i < listNode.length; i++) {
+                            listSensor = listSensor.concat([Object.keys(newsampledata.results[listNode[i]].payload)]);
+                        }
+                        var bigArray = [];
+                        var firstRow = ["Node :"],
+                            secondRow = ["Times"];
+
+
+                        for (var i = 0; i < listNode.length; i++) {
+                                firstRow.push(newsampledata.results[listNode[i]].name.toString());
+                            for (var j = 0; j < listSensor[i].length; j++) {
+                                secondRow.push(newsampledata.results[listNode[i]].payload[listSensor[i][j]].name.toString());
+                                firstRow.push(" ");
+                            }
+                                secondRow.push(" ");
+                        }
+
+                        var importantData = importantDatas.results;
+                        importantData.forEach(function(data){
+                            var ArraySample = [];
+                            ArraySample.push( data.rightNow );
+                            for (var i = 0; i < listNode.length; i++) {
+                                
+                                for (var j = 0; j < listSensor[i].length; j++) {
+
+                                    if (Object.keys(data.payload).indexOf(listNode[i]) >=0 ){
+                                        ArraySample.push( data.payload[listNode[i]].payload[listSensor[i][j]].value);
+                                    }
+                                    else{
+                                        ArraySample.push( " " );
+                                    }
+                                }
+                                ArraySample.push( " " );
+                            }
+                            
+                            bigArray = bigArray.concat([ArraySample]);
+                            delete ArraySample;
+
+                        });
+
+                        bigArray.unshift([secondRow]);
+                        bigArray.unshift([firstRow]);
+
+                        var csvContent = "data:text/csv;charset=utf-8,";
+                        bigArray.forEach(function(infoArray, index){
+
+                           dataString = infoArray.join(",");
+                           csvContent += index < bigArray.length ? dataString+ "\n" : dataString;
+
+                        }); 
+
+                        var encodedUri = encodeURI(csvContent);
+                        var link = document.createElement("a");
+                        link.setAttribute("href", encodedUri);
+                        link.setAttribute("download", "{{season}}.csv");
+                        document.body.appendChild(link); // Required for FF
+
+                        link.click(); // This will download the data file named "my_data.csv".
+
+                    });
+                    });
+                });
+
+
+
+        </script>
+    </body>
+    </html>
+    {% endblock %}

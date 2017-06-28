@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block tittle%}{% endblock %}</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link id="bootstrap-rtl-link" href="" rel="stylesheet" />
+
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    
+    {% block style %}{% endblock %}
+</head>
+
+<body>
+    <div class="container" style="padding-top: 20px; padding-bottom: 20px;">
+        {% include "navbar.html" %}
+    </div>
+    {% block pagecontent %}
+    {% endblock %}
+    
+    {% block script %}
+    {% endblock %}
+</body>
+
+</html>

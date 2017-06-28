@@ -1,0 +1,58 @@
+{% extends "_layout.html"%}
+
+{% block tittle %} Edit your Seasons {% endblock %}
+
+{% block style %}
+  <link href="{{ url_for('static', filename='css/static.css') }}" rel="stylesheet" />
+{% endblock %}
+
+{% block pagecontent %}
+
+  <div class="container">
+  	<div class="row">
+  		<div class="col-lg-12 col-sm-12 col-xs-12">
+  			<form method="post" action="/api/createanewseason">
+  				<h1>Create a new season</h1>
+  				<input name="name" placeholder="Name" type="text" required="">
+  				<button type="Submit">Submit</button>
+  			</form>
+  			<form action="/api/deleteseason" method="post" >
+  				<h1 style="background: #ef342b;">Delete The Season</h1>
+  				<h4 style="text-align: justify-all; margin-left: 30px;margin-right: 20px;">We know the season's Data is important. So, deleting any season is not delete it in Cloud. It only not display in Web.</h4>
+  				<hr class="wide" />
+  				<h4 style="text-align: justify-all; margin-left: 30px;margin-right: 20px;">We have number of seasons</h4>
+  				<select id="e1" class="form-control" style="width: 50%;margin: 0 auto;">
+  				</select>
+  				<button type="Submit" style="background: #ef342b;">Delete</button>
+  			</form>
+  		</div>
+  </div>
+  <div class="jumbotron">
+        <h2>Database in <a href="https://cloudant.com/">Cloudant.com</a></h2>
+        <p class="lead">Account: 96b08c73-c2e2-4d02-a637-6006b00f0eb5-bluemix</p>
+        <p class="lead">Password: a48cec1e622bb0dedc3b07c5443c2176c4e9f3ac2fcde2102fb3749132140173</p>
+        <p><a class="btn btn-lg btn-success" href="https://cloudant.com/sign-in/" role="button">Go Database</a></p>
+      </div>
+    </div>
+
+{% endblock %}
+
+
+{% block script %}
+
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+  <script type="text/javascript">
+
+		// get info select2
+		$.post( "/api/getseasons", function( data ) {        
+	        var opString = "";
+	        len = data.results.nameWeb.length;
+	        for (var i = 0; i < len; i++) {
+	          opString += "<option value='" + i + "' />" + data.results.nameWeb[i];
+	        }
+	        document.getElementById("e1").innerHTML = opString;
+      	});
+
+  </script>
+{% endblock %}

@@ -1,0 +1,71 @@
+
+
+{% extends "_layout.html"%}
+
+{% block tittle %} About {% endblock %}
+
+{% block style %}
+
+
+  <link rel="stylesheet" type="text/css" href="static/css/about.css">
+
+
+{% endblock %}
+
+
+
+{% block pagecontent %}
+	<!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+
+
+    <div class="container marketing">
+
+      <!-- Three columns of text below the carousel -->
+      <div class="row">
+        <div class="col-lg-4">
+          <img class="img-circle" src="static/images/lnanhkhoa.png" alt="Generic placeholder image" width="140" height="140">
+          <h2>Khoa Le</h2>
+          <p>Age: 24</p>
+          <p>Position:Software Engineer</p>
+          <p>Facebook: <a href="https://fb.com/lnanhkhoa">https://facebook.com/lnanhkhoa</a></p>
+          <p>Gmail: lnanhkhoa303@gmail.com</p>
+          <p>Phone Num: (+84) 169 996 4550</p>
+
+          <p><a class="btn btn-default" href="https://fb.com/lnanhkhoa" role="button">View details &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+
+        <div class="col-lg-4">
+          <img class="img-circle" src="" alt="Generic placeholder image" width="140" height="140">
+          <h2>Hoang Nguyen</h2>
+          <p>Age: 26</p>
+          <p>Position:Embedded Software Engineer</p>
+          <p>Facebook: <a href="https://www.facebook.com/NguyenAnhHoang11">https://www.facebook.com/NguyenAnhHoang11</a></p>
+          <p>Gmail: nguyen.anhhoang789@gmail.com </p>
+          <p>Phone Num: (+84) 967 804 800</p>
+
+          <p><a class="btn btn-default" href="https://fb.com/lnanhkhoa" role="button">View details &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+          <img class="img-circle" src="" alt="Generic placeholder image" width="140" height="140">
+          <h2>Vinh Huynh</h2>
+          <p>Age: 25</p>
+          <p>Position:Embedded Hardware Engineer</p>
+          <p>Facebook: <a href="https://www.facebook.com/vinhhuynh2002">https://www.facebook.com/vinhhuynh2002</a></p>
+          <p>Gmail: vanvinh202@gmail.com</p>
+          <p>Phone Num: (+84) </p>
+
+          <p><a class="btn btn-default" href="https://fb.com/lnanhkhoa" role="button">View details &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+      </div><!-- /.row -->
+
+
+{% endblock %}
+
+{% block script%}
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,323 @@
+{% extends "_layout.html"%}
+
+{% block tittle %} Agriculture Seasons {% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='js/RangeSlider-all/RangeSlider-all.min.css') }}">
+    <!-- <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style> -->
+{% endblock %}
+
+{% block pagecontent %}
+    <div class="row">
+        <div style="width: 70%; margin: 0 auto;">
+                <div class="row">
+                    <div><!-- <div style="width: 95%; margin: 0 auto;"> -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3 class="widget-caption">Chart in </h3>
+                            </div>
+                            <div class="widget-body">
+                                <div class="widget-main ">
+                                    <div class="tabbable">
+                                        <ul class="nav nav-tabs tabs-flat" >
+                                            <li>
+                                                <a data-toggle="tab" href="#" id="{{item}}reverse">
+                                                    Reverse
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <div class="tab-content tabs-flat">
+                                            <canvas id="canvas"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br></br>
+                    </div>
+                </div>
+        </div>
+            <!-- /Page Body -->
+    </div>
+    <!-- End body html -->
+{% endblock %}
+
+{% block script %}
+        <script src="{{ url_for('static', filename='js/Chart.bundle.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/utils.js') }}"> </script>
+
+        <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+        <script src="{{ url_for('static', filename='js/RangeSlider-all/RangeSlider-all.min.js') }}"></script>
+        <!-- <script src="{{ url_for('static', filename='js/RangeSlider-all/RangeSlider-all.minjs') }}"></script> -->
+
+        <!-- {# <script>
+            // Define a plugin to provide data labels
+            Chart.plugins.register({
+                afterDatasetsDraw: function(chartInstance, easing) {
+                    // To only draw at the end of animation, check for easing === 1
+                    var ctx = chartInstance.chart.ctx;
+                    chartInstance.data.datasets.forEach(function (dataset, i) {
+                        var meta = chartInstance.getDatasetMeta(i);
+                        if (!meta.hidden) {
+                            meta.data.forEach(function(element, index) {
+                                // Draw the text in black, with the specified font
+                                ctx.fillStyle = 'rgb(0, 0, 0)';
+                                var fontSize = 16;
+                                var fontStyle = 'normal';
+                                var fontFamily = 'Helvetica Neue';
+                                ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+
+                                // Just naively convert to string for now
+                                var dataString = dataset.data[index].toString();
+
+                                // Make sure alignment settings are correct
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'middle';
+
+                                var padding = 5;
+                                var position = element.tooltipPosition();
+                                ctx.fillText(dataString, position.x, position.y - (fontSize / 2) - padding);
+                            });
+                        }
+                    });
+                }
+            });
+            var colorselect = ["blue","red","green","black"];
+            function datasetsLine (label ,data, colorselect) {
+                var color = Chart.helpers.color;
+                switch (colorselect){
+                    case "blue": chartColor = window.chartColors.blue;
+                        break;
+                    case "green": chartColor = window.chartColors.green;
+                        break;
+                    case "red": chartColor = window.chartColors.red;
+                        break;
+                    case "black": chartColor = window.chartColors.black;
+                        break;
+                    default: break;
+                }
+                return {
+                    type: 'line',
+                    label: label,
+                    backgroundColor: color(chartColor).alpha(0.05).rgbString(),
+                    borderColor: color(chartColor).alpha(0.9).rgbString(),
+                    data: data
+                }
+            }
+
+            $.post( "/api/getalldata/{{season}}", function( data ) {        
+                
+                console.log(data.results);
+
+                var color = Chart.helpers.color;
+                
+                dataset = (Node, sensor) => {
+                    var dataResults = data.results[Node].payload;
+                    var datasetReturn = [];
+                    for (var i = 0; i < sensor.length; i++) {
+                        datasetReturn[i] = datasetsLine(dataResults[sensor[i]].name, dataResults[sensor[i]].payload.value, colorselect[i]);
+                    }
+                    return datasetReturn;
+                };
+
+                {% for node in items %}
+
+                var barChartData{{node}} = {
+                    labels: data.results['{{node}}'].time,
+                    datasets: dataset("{{node}}",Object.keys(data.results['{{node}}'].payload))
+                };
+
+
+                var ctx{{node}} = document.getElementById("canvas_{{node}}").getContext("2d");
+                var config{{node}} = {
+                    type: 'line',
+                    data: barChartData{{node}},
+                    options: {
+                        responsive: true,
+                        title:{
+                            display:true,
+                            text:'Chart.js Line Chart'
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            intersect: true
+                        },
+                        scales: {
+                            xAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Time'
+                                }
+                            }],
+                            yAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Value'
+                                }
+                            }]
+                        }
+                    }
+                };
+
+                window.myLine{{node}} = new Chart(ctx{{node}}, config{{node}});
+
+                $('#{{node}}reverse').click(function(){
+                    var test = [1,2,3,4];
+                    config{{node}}.data.labels.reverse();
+                    config{{node}}.data.datasets.forEach(function(dataset){
+                        dataset.data.reverse();
+                    });
+                    window.myLine{{node}}.update();
+                });
+
+                {% endfor %}
+            });
+        </script> #}-->
+
+        <script type="text/javascript">
+                    //this is just for debug
+            randomTo = function (from, to) {
+                return Math.floor(Math.random() * (to - from + 1) + from);
+            };
+
+        // line chart data
+        var iniData = {
+            labels:[
+                "2000",
+                "2001",
+                "2002",
+                "2003",
+                "2004",
+                "2005",
+                "2006",
+                "2007",
+                "2008",
+                "2009",
+                "2011",
+                "2012",
+                "2013",
+                "2014",
+                "2015",
+                "2016",
+                "2017",
+                "2018",
+                "2019",
+                "2020"
+            ],
+            datasets:[{
+                label: "Rangeslider Line 1",
+                fillColor:"rgba(172,194,132,0)",
+                strokeColor:"#C45662",
+                pointColor:"#C45662",
+                pointStrokeColor:"#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "#C45662",
+                /*You only put numeric data here*/
+                data:[
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                ]
+            },
+            {
+                label: "Rangeslider Line 2",
+                fillColor:"rgba(172,194,132,0)",
+                strokeColor:"#C45662",
+                pointColor:"#C45662",
+                pointStrokeColor:"#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "#C45662",
+                /*You only put numeric data here*/
+                data:[
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                    randomTo(480, 600),
+                ],
+            }]
+        },
+
+
+        // create the options
+        options = {
+            scaleBeginAtZero: true,
+            /*This is how to customize the way the labels look :) */
+            tooltipTemplate: "ewff",
+            label: 'test'
+        },
+
+
+
+        // get line chart canvas
+        ini = document.getElementById('canvas').getContext('2d')
+
+
+        rs = new RangeSliderChart({
+
+            chartData: iniData,
+            chartOpts: options,
+            chartType: 'line',
+            chartCTX: ini,
+            class: 'my-chart-ranger',
+
+            initial: [3, 10]
+        })
+
+
+
+        </script>
+
+
+
+
+</body>
+</html>
+{% endblock %}

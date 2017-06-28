@@ -1,0 +1,29 @@
+
+
+{% extends "_layout.html"%}
+
+{% block tittle %} About {% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+
+
+{% block pagecontent %}
+	<!-- Jumbotron -->
+        <div class="jumbotron container" style="text-align: center;">
+            <h1 style="text-align: center;">MEMSiTech Company</h1>
+            <h2 class="lead" style="text-align: center;">Application Group</h2>
+            <h2 class="lead text-primary" >Gmail: memsitech@gmail.com </h2>
+            <h2 class="lead text-primary">Address: Lost I6-I7 Sg Hi-Tech Park, D1 Street, Tan Phu, District 9, HCHC </h2>
+        	<img src="{{ url_for('static', filename='images/Memsitech.jpg') }}" width="100%">
+        </div>
+{% endblock %}
+
+
+{% block script%}
+	<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+{% endblock %}

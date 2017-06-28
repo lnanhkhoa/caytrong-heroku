@@ -1,0 +1,46 @@
+    <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Agriculture's Project</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul name = "left" class="nav navbar-nav">
+              <li><a href="/">Home</a></li>
+              <li><a href="/about">About</a></li>
+              <li><a href="/contact">Contact</a></li>
+              <li class="dropdown active" >
+                <a href="{{'#'}}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Seasons <span class="caret"></span></a>
+                <ul id="nameWeb" class="dropdown-menu">
+                    
+                </ul>
+              </li>
+            </ul>
+            <ul name = "right" class="nav navbar-nav navbar-right">
+              <li><a href="/editseasons">Edit Seasons</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+      <script>
+      $.post( "/api/getseasons", function( data ) {
+        var liString = "";
+        len = data.results.nameWeb.length;
+        for (var i = 0; i < len; i++) {
+          liString += "<li><a href='/seasons/"+ data.results.nameSeason[i] +"'>" + data.results.nameWeb[i] + "</a></li>";
+        }
+        document.getElementById("nameWeb").innerHTML = liString;
+      });
+      $.post( "/session", function( data ) {
+        console.log(data);
+        if (data == "1") {
+          $("#navbar ul[name=right]").append('<li><a href="/logout">Log Out</a></li>');
+        }
+      });
+    </script>

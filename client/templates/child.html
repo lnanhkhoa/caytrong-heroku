@@ -1,0 +1,26 @@
+ 
+
+        var barChartData{{node}} = {
+            labels: data.results.{{node}}.{{items[node][0]}}.labels,
+            datasets: dataset({{node}},[
+                {% for  %}
+                ]
+            }
+        };
+
+        var ctx{{node}} = document.getElementById("canvas_{{node}}").getContext("2d");
+        
+        window.myBar{{node}} = new Chart(ctx{{node}}, {
+            type: 'bar',
+            data: barChartData{{node}},
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Chart in {{node}}'
+                },
+            }
+        });
+
+
+
