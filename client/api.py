@@ -188,16 +188,16 @@ def create_a_new_season():
 @app.route('/api/deleteseason', methods=['GET', 'POST'])
 def deleteseason():
     """
-
     :return:
     """
     if flask.request.method == 'POST':
-        numerical = int(flask.request.form['e1'])
-        # docsample = copy.deepcopy(db['design_seasons'].get_design_document('design_seasons'))
+        numerical = int(flask.request.form['selectDelete'])
+        docsample = copy.deepcopy(db['design_seasons'].get_design_document('design_seasons'))
         design_document = db['design_seasons']['_design/design_seasons']
         del design_document['seasons'][numerical]
         design_document.save()
         return flask.render_template("success.html")
+        return "OK"
     return "Error"
 
 

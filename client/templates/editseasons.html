@@ -16,12 +16,12 @@
   				<input name="name" placeholder="Name" type="text" required="">
   				<button type="Submit">Submit</button>
   			</form>
-  			<form action="/api/deleteseason" method="post" >
+  			<form action="/api/deleteseason" method="post">
   				<h1 style="background: #ef342b;">Delete The Season</h1>
   				<h4 style="text-align: justify-all; margin-left: 30px;margin-right: 20px;">We know the season's Data is important. So, deleting any season is not delete it in Cloud. It only not display in Web.</h4>
   				<hr class="wide" />
   				<h4 style="text-align: justify-all; margin-left: 30px;margin-right: 20px;">We have number of seasons</h4>
-  				<select id="e1" class="form-control" style="width: 50%;margin: 0 auto;">
+  				<select id="selectDelete" name="selectDelete" class="form-control" style="width: 50%;margin: 0 auto;">
   				</select>
   				<button type="Submit" style="background: #ef342b;">Delete</button>
   			</form>
@@ -51,7 +51,7 @@
 	        for (var i = 0; i < len; i++) {
 	          opString += "<option value='" + i + "' />" + data.results.nameWeb[i];
 	        }
-	        document.getElementById("e1").innerHTML = opString;
+	        document.getElementById("selectDelete").innerHTML = opString;
       	});
 
   </script>

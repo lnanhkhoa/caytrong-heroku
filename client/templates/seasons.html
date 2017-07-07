@@ -93,18 +93,19 @@
             <script src="{{ url_for('static', filename='js/Chart.bundle.js') }}"></script>
             <script src="{{ url_for('static', filename='js/utils.js') }}"> </script>
             <script>
-                var colorselect = ["red","blue","green","black"];
+                // rgb(255, 64, 0)
+                var colorselect = ["Red", "Black", "Blue", "Green", "Cyan", "Magenta", "Gold", "Gray"];
                 function datasetsLine (label ,data, colorselect) {
                     var color = Chart.helpers.color;
                     switch (colorselect){
-                        case "blue": chartColor = window.chartColors.blue;
-                        break;
-                        case "green": chartColor = window.chartColors.green;
-                        break;
-                        case "red": chartColor = window.chartColors.red;
-                        break;
-                        case "black": chartColor = window.chartColors.black;
-                        break;
+                        case "Red": chartColor      = "rgb(255, 0, 0)";     break;
+                        case "Black": chartColor    = "rgb(0, 0, 0)";       break;
+                        case "Blue": chartColor     = "rgb(0, 128, 255)";   break;
+                        case "Green": chartColor    = "rgb(0, 255, 0)";     break;
+                        case "Gold": chartColor     = "rgb(255, 215, 0)";     break;
+                        case "Cyan": chartColor     = "rgb(0, 139, 139)";     break;
+                        case "Magenta": chartColor  = "rgb(139, 0, 139)";     break;
+                        case "Gray": chartColor     = "rgb(128, 128, 128)";   break;
                         default: break;
                     }
                     return {
