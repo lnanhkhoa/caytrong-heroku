@@ -3,6 +3,11 @@
 {% block tittle %} Agriculture Seasons {% endblock %}
 
 {% block style %}
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link id="bootstrap-rtl-link" href="" rel="stylesheet" />
+    <link rel="stylesheet" href="../static/css/flat/green.css">
+    <link rel="stylesheet" href="../static/css/nouislider.min.css">
+
     <style type="text/css">
         .button {
             border: none;
@@ -15,16 +20,34 @@
             color: white;
             margin-top: 30px;
             box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
-          }
-          .button:hover {
-            -webkit-transform: translateY(-3px);
-            -ms-transform: translateY(-3px);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
-          }
-    </style>
+        }
 
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='js/RangeSlider-all/RangeSlider-all.min.css') }}">
+        .button:hover {
+        -webkit-transform: translateY(-3px);
+        -ms-transform: translateY(-3px);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .licheckbox{
+            padding-left: 5px;
+            padding-right: 5px;
+            padding-bottom: 5px;
+            padding-top: 5px;
+
+        }
+        .listcheckbox{
+            padding-top: 30%;
+            list-style-type:none;
+        }
+
+    </style>
 
 <!--     <style>
         canvas {
@@ -38,7 +61,7 @@
 
     {% block pagecontent %}
     <div class="row">
-        <div style="width: 70%; margin: 0 auto;">
+        <div style="width: 95%; margin: 0 auto;">
             {% for item in items %}
             <div class="row">
                 <div><!-- <div style="width: 95%; margin: 0 auto;"> -->
@@ -58,15 +81,61 @@
                                     </ul>
 
                                     <div class="tab-content tabs-flat">
-                                        <canvas id="canvas_{{item}}"></canvas>
+                                        <div class="row">
+                                            <div class="col-lg-9 col-sm-9 col-xs-9">
+                                                <canvas id="canvas_{{item}}"></canvas>
+                                            </div>
+                                            <div class="demo-list clear col-lg-3 col-sm-3 col-xs-3" id="list-{{ item }}">
+                                                <ul class="listcheckbox">
+                                                    <li class="licheckbox">
+                                                        <input tabindex="0" type="checkbox" name="checkall" id="{{ item }}-flat-checkbox-all" checked>
+                                                        <label for="{{ item }}-flat-checkbox-all">Select All</label>
+                                                    </li>
+                                                    <li class="licheckbox">
+                                                        <input tabindex="1" type="checkbox" name="check1" id="{{ item }}-flat-checkbox-1" checked>
+                                                        <label for="{{ item }}-flat-checkbox-1">pH</label>
+                                                    </li>
+                                                    <li class="licheckbox">
+                                                        <input tabindex="2" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-2" checked>
+                                                        <label for="{{ item }}-flat-checkbox-2">Soil Humidity</label>
+                                                    </li>
+                                                    <li class="licheckbox">
+                                                        <input tabindex="3" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-3" checked>
+                                                        <label for="{{ item }}-flat-checkbox-3">Soil Temperature</label>
+                                                    </li>
+                                                    <li class="licheckbox">
+                                                        <input tabindex="4" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-4" checked>
+                                                        <label for="{{ item }}-flat-checkbox-4">uV</label>
+                                                    </li>
+                                                    <li class="licheckbox">
+                                                        <input tabindex="5" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-5" checked>
+                                                        <label for="{{ item }}-flat-checkbox-5">Air Humidity</label>
+                                                    </li>
+                                                    <li class="licheckbox">
+                                                        <input tabindex="6" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-6" checked>
+                                                        <label for="{{ item }}-flat-checkbox-6">Air Temperature</label>
+                                                    </li>
+                                                </ul>
+                                                <script>
+                                                $(document).ready(function () {
+                                                    $('.demo-list input').iCheck({
+                                                        checkboxClass: 'icheckbox_flat-green',
+                                                        radioClass: 'iradio_flat-green',
+                                                        increaseArea: '80%'
+                                                    });
+                                                });
+                                            </script>
                                             </div>
                                         </div>
                                     </div>
+                                        <div style="width: 90%; margin: auto;" id="drag-tap_{{item}}"></div>
                                 </div>
                             </div>
-                            <br></br>
                         </div>
                     </div>
+                    <br></br>
+                </div>
+            </div>
                     {% else %}
                     did not iterate
                     {% endfor %}
@@ -85,135 +154,195 @@
             {% endblock %}
 
             {% block script %}
-            <script src="{{ url_for('static', filename='js/RangeSlider-all/RangeSlider-all.min.js') }}"></script>
 
             <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
             <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-
-            <script src="{{ url_for('static', filename='js/Chart.bundle.js') }}"></script>
+            <script src="{{ url_for('static', filename='js/chartjs/Chart.bundle.min.js') }}"></script>
             <script src="{{ url_for('static', filename='js/utils.js') }}"> </script>
+
+            <script src="../static/js/icheck/jquery.js"></script>
+            <script src="../static/js/icheck/icheck.min.js"></script>
+            <script src="../static/js/icheck/custom.min.js"></script>
+            <script src="../static/js/nouislider/nouislider.min.js"></script>
+
+
             <script>
-                // rgb(255, 64, 0)
-                var colorselect = ["Red", "Black", "Blue", "Green", "Cyan", "Magenta", "Gold", "Gray"];
-                function datasetsLine (label ,data, colorselect) {
-                    var color = Chart.helpers.color;
-                    switch (colorselect){
-                        case "Red": chartColor      = "rgb(255, 0, 0)";     break;
-                        case "Black": chartColor    = "rgb(0, 0, 0)";       break;
-                        case "Blue": chartColor     = "rgb(0, 128, 255)";   break;
-                        case "Green": chartColor    = "rgb(0, 255, 0)";     break;
-                        case "Gold": chartColor     = "rgb(255, 215, 0)";     break;
-                        case "Cyan": chartColor     = "rgb(0, 139, 139)";     break;
-                        case "Magenta": chartColor  = "rgb(139, 0, 139)";     break;
-                        case "Gray": chartColor     = "rgb(128, 128, 128)";   break;
-                        default: break;
-                    }
+                var colorNames = Object.keys(window.chartColors);
+                function datasetsLine (label ,data, index) {
                     return {
                         type: 'line',
                         label: label,
-                        backgroundColor: color(chartColor).alpha(0.01).rgbString(),
-                        borderColor: color(chartColor).alpha(0.9).rgbString(),
+                        borderColor: window.chartColors[colorNames[index]],
+                        backgroundColor: window.chartColors[colorNames[index]],
+                        fill: false,
                         data: data
                     }
                 }
 
-                $.post( "/api/getalldata/{{season}}", function( data ) {        
-
+                $.post( "/api/getalldata/{{season}}", function( data ) {
                     console.log(data.results);
 
                     var color = Chart.helpers.color;
 
-                    dataset = (Node, sensor) => {
+                    dataset = function(Node, sensor){
                         var dataResults = data.results[Node].payload;
                         var datasetReturn = [];
                         for (var i = 0; i < sensor.length; i++) {
-                            datasetReturn[i] = datasetsLine(dataResults[sensor[i]].name, dataResults[sensor[i]].payload.value, colorselect[i]);
+                            datasetReturn[i] = datasetsLine(dataResults[sensor[i]].name, dataResults[sensor[i]].payload.value, i);
                         }
                         return datasetReturn;
                     };
 
-                    options = {
-                        scaleBeginAtZero: true,
-                        tooltipTemplate: "ewff",
-                        label: 'test',
-                        scales: {
-                            xAxes: [{
-                                display: true,
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: 'Time'
-                                }
-                            }],
-                            yAxes: [{
-                                display: true,
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: 'Value'
-                                }
-                            }]
-                        }
-                    };  
-
                     {% for node in items %}
 
                     var barChartData{{node}} = {
-                        labels: data.results['{{node}}'].time,
-                        datasets: dataset("{{node}}",Object.keys(data.results['{{node}}'].payload))
+                        type:'line',
+                        data: {
+                            labels: data.results['{{node}}'].time,
+                            datasets: dataset("{{node}}", Object.keys(data.results.{{node}}.payload))
+                        },
+                        options: {
+                            elements: {
+                                point: { radius: 1 }
+                            },
+                            responsive: true,
+                            legend: {
+                                display: true
+                            },
+                            title: {
+                                display: true,
+                                text: "Chart.js Line Chart - Stacked Area"
+                            },
+                            tooltips: {
+                                mode: 'index',
+                                intersect: false
+
+                            },
+                            hover: {
+                                mode: 'nearest',
+                                intersect: false
+                            },
+                            pointDot: false,
+                            scales: {
+                                xAxes: [{
+                                    scaleLabel: {
+                                        display: true
+                                    },
+                                    ticks: {
+                                        autoSkip: true,
+                                        maxTicksLimit: 6
+                                    }
+                                }],
+                                yAxes: [{
+                                    //stacked: true,
+                                    position: "right",
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Value'
+                                    }
+                                }]
+                            }
+                        }
+
                     };
 
+                    $(window).ready(function () {
+                        console.log("OK");
+                        var ctx{{node}} = document.getElementById("canvas_{{node}}").getContext("2d");
+                        window.myLine{{node}} = new Chart(ctx{{ node }}, barChartData{{ node }});
 
-                    var ctx{{node}} = document.getElementById("canvas_{{node}}").getContext("2d");
-                    myLine{{node}} = new RangeSliderChart({
+                        $('#{{node}}downNode').click(function () {
+                            var aa = ['Time'];
+                            var dataraw = [barChartData{{node}}.labels];
 
-                        chartData: barChartData{{node}},
-                        chartOpts: options,
-                        chartType: 'line',
-                        chartCTX: ctx{{node}},
-                        class: 'my-chart-ranger',
+                            barChartData{{node}}.datasets.forEach(function (dataset) {
+                                aa.push(dataset.label);
+                                dataraw = dataraw.concat([dataset.data]);
+                            });
 
-                        initial: [0, 20]
-                    });
+                            var A = [['{{node}}'], aa];
+                            var Adata = [];
+                            for (var i = 0; i < dataraw[0].length; i++) {
+                                var adata = [];
+                                dataraw.forEach(function (data) {
+                                    adata.push(data[i]);
+                                });
+                                Adata = Adata.concat([adata]);
+                                delete adata;
+                            }
+                            ;
 
-                    $('#{{node}}downNode').click(function(){
-                        var aa = ['Time'];
-                        var dataraw = [barChartData{{node}}.labels];
+                            bigArray = A.concat(Adata);
+                            console.log(A);
 
-                        barChartData{{node}}.datasets.forEach(function(dataset) {
-                            aa.push(dataset.label);
-                            dataraw = dataraw.concat([dataset.data]);
+                            var csvContent = "data:text/csv;charset=utf-8,";
+                            bigArray.forEach(function (infoArray, index) {
+
+                                dataString = infoArray.join(",");
+                                csvContent += index < bigArray.length ? dataString + "\n" : dataString;
+
+                            });
+
+                            var encodedUri = encodeURI(csvContent);
+                            var link = document.createElement("a");
+                            link.setAttribute("href", encodedUri);
+                            link.setAttribute("download", "{{node}}.csv");
+                            document.body.appendChild(link); // Required for FF
+
+                            link.click(); // This will download the data file named "my_data.csv".
+                        });
+                        var lengthData{{ node }} = data.results.{{ node }}.time.length;
+
+                        // drag Slider
+                        var dragSlider{{ node }} = document.getElementById('drag-tap_{{node}}');
+                        noUiSlider.create(dragSlider{{ node }}, {
+                            behaviour: 'drag-tap',
+                            start: [0, lengthData{{ node }}],
+                            step: 1,
+                            connect: true,
+                            range: {
+                                'min': 0,
+                                'max': lengthData{{ node }}
+                            }
                         });
 
-                        var A = [['{{node}}'],aa];
-                        var Adata = [];
-                        for (var i = 0; i < dataraw[0].length; i++) {
-                            var adata = [];
-                            dataraw.forEach(function(data){
-                                adata.push(data[i]);
+                        dragSlider{{ node }}.noUiSlider.on('slide', function (values, callback) {
+
+                            barChartData{{ node }}.data.labels = data.results.{{ node }}.time.slice(values[0], values[1]);
+                            var sensor = Object.keys(data.results.{{node}}.payload);
+                            barChartData{{ node }}.data.datasets.forEach(function (dataset, index) {
+                                dataset.data = data.results.{{ node }}.payload[sensor[index]].payload.value.slice(values[0], values[1]);
                             });
-                            Adata = Adata.concat([adata]);
-                            delete adata;
-                        };
+                            window.myLine{{ node }}.update();
+                        });
+                        $('#list-{{ node }} input').on(' ifClicked ifChecked ifUnchecked ifDisabled ifEnabled ifDestroyed', function (event) {
+                            var EventCheckbox1 = event.type.replace('if', '').toLocaleLowerCase();
+                            switch (this.id){
 
-                        bigArray = A.concat(Adata);
-                        console.log(A);
+                            case '{{ node }}-flat-checkbox-all':
+                                if (EventCheckbox1 === "checked") {
+                                    $('#list-{{ node }} input').iCheck('check');
+                                } else if(EventCheckbox1 === "unchecked")
+                                    $('#list-{{ node }} input').iCheck('uncheck');
+                                break;
 
-                        var csvContent = "data:text/csv;charset=utf-8,";
-                        bigArray.forEach(function(infoArray, index){
-
-                           dataString = infoArray.join(",");
-                           csvContent += index < bigArray.length ? dataString+ "\n" : dataString;
-
-                        }); 
-
-                        var encodedUri = encodeURI(csvContent);
-                        var link = document.createElement("a");
-                        link.setAttribute("href", encodedUri);
-                        link.setAttribute("download", "{{node}}.csv");
-                        document.body.appendChild(link); // Required for FF
-
-                        link.click(); // This will download the data file named "my_data.csv".
+                            default:
+                                var index = parseInt(this.id.replace("{{ node }}-flat-checkbox-",''))-1;
+                                var sensor = Object.keys(data.results.{{node}}.payload);
+                                if(EventCheckbox1 === "checked"){
+                                    barChartData{{ node }}.data.datasets.push(datasetsLine( data.results.{{ node }}.payload[sensor[index]].name, data.results.{{ node }}.payload[sensor[index]].payload.value, index));
+                                }else if(EventCheckbox1 === "unchecked"){
+                                    barChartData{{ node }}.data.datasets.forEach(function(dataset, i){
+                                        if(dataset.label === data.results.{{ node }}.payload[sensor[index]].name){
+                                            barChartData{{ node }}.data.datasets.splice(i,1);
+                                        }
+                                    });
+                                }
+                                break;
+                            };
+                            window.myLine{{ node }}.update();
+                        });
                     });
-
                     {% endfor %}
 
                 });
@@ -301,6 +430,40 @@
 
                     });
                     });
+                });
+
+                Chart.plugins.register({
+                    afterDatasetsDraw: function (chartInstance, easing) {
+                        // To only draw at the end of animation, check for easing === 1
+                        var ctx = chartInstance.chart.ctx;
+                        chartInstance.data.datasets.forEach(function (dataset, i) {
+                            var meta = chartInstance.getDatasetMeta(i);
+                            if (!meta.hidden) {
+                                meta.data.forEach(function (element, index) {
+                                    if (index === 0) {      //(meta.data.length - 1)
+                                        // Draw the text in black, with the specified font
+                                        ctx.fillStyle = 'rgb(0, 0, 0)';
+
+                                        var fontSize = 16;
+                                        var fontStyle = 'normal';
+                                        var fontFamily = 'Helvetica Neue';
+                                        ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+
+                                        // Just naively convert to string for now
+                                        var dataString = parseFloat(dataset.data[index]).toFixed(2).toString()  ;
+
+                                        // Make sure alignment settings are correct
+                                        ctx.textAlign = 'center';
+                                        ctx.textBaseline = 'middle';
+
+                                        var padding = 0;
+                                        var position = element.tooltipPosition();
+                                        ctx.fillText(dataString, position.x - 25, position.y - (fontSize / 2) - padding);
+                                    }
+                                });
+                            }
+                        });
+                    }
                 });
 
 
