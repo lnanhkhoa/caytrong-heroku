@@ -102,7 +102,7 @@ def get_alldata(namedatabase):
     if dataraw is {}:
         return "Error"
     dataraw = dataraw["docs"]
-
+    return flask.jsonify(results=dataraw)
     # Create the Shell Data for reponse POST methods
     sampledata = requests.get(str(flask.request.url_root) + "api/newsampledata/" + str(namedatabase))
     sampledata = json.loads(sampledata.text)
