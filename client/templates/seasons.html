@@ -93,27 +93,27 @@
                                                     </li>
                                                     <li class="licheckbox">
                                                         <input tabindex="1" type="checkbox" name="check1" id="{{ item }}-flat-checkbox-1" checked>
-                                                        <label for="{{ item }}-flat-checkbox-1">pH</label>
+                                                        <label name="label1" for="{{ item }}-flat-checkbox-1">pH</label>
                                                     </li>
                                                     <li class="licheckbox">
                                                         <input tabindex="2" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-2" checked>
-                                                        <label for="{{ item }}-flat-checkbox-2">Soil Humidity (%RH)</label>
+                                                        <label name="label2" for="{{ item }}-flat-checkbox-2">Soil Humidity (%RH)</label>
                                                     </li>
                                                     <li class="licheckbox">
                                                         <input tabindex="3" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-3" checked>
-                                                        <label for="{{ item }}-flat-checkbox-3">Soil Temperature (°C)</label>
+                                                        <label name="label3" for="{{ item }}-flat-checkbox-3">Soil Temperature (°C)</label>
                                                     </li>
                                                     <li class="licheckbox">
                                                         <input tabindex="4" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-4" checked>
-                                                        <label for="{{ item }}-flat-checkbox-4">uV (mW/cm2)</label>
+                                                        <label name="label4" for="{{ item }}-flat-checkbox-4">uV (mW/cm2)</label>
                                                     </li>
                                                     <li class="licheckbox">
                                                         <input tabindex="5" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-5" checked>
-                                                        <label for="{{ item }}-flat-checkbox-5">Air Humidity (%RH)</label>
+                                                        <label name="label5" for="{{ item }}-flat-checkbox-5">Air Humidity (%RH)</label>
                                                     </li>
                                                     <li class="licheckbox">
                                                         <input tabindex="6" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-6" checked>
-                                                        <label for="{{ item }}-flat-checkbox-6">Air Temperature (°C)</label>
+                                                        <label name="label6" for="{{ item }}-flat-checkbox-6">Air Temperature (°C)</label>
                                                     </li>
                                                 </ul>
                                                 <script>
@@ -168,6 +168,7 @@
 
             <script>
                 var colorNames = Object.keys(window.chartColors);
+                $("label[name = label1]").css("color",colorNames[0]);
                 function datasetsLine (label ,data, index) {
                     return {
                         type: 'line',
