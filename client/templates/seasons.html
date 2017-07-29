@@ -74,7 +74,7 @@
                                 <div class="tabbable">
                                     <ul class="nav nav-tabs tabs-flat" >
                                         <li>
-                                            <a data-toggle="tab" href="#" id="{{item}}downNode">
+                                            <a data-toggle="tab" href="#" id="downloadcsv"> <!-- {{item}}downNode -->
                                                 Download excel file
                                             </a>
                                         </li>
@@ -185,7 +185,7 @@
                     }
                 }
 
-                $.post( "/api/getalldata/{{season}}", function( data ) {
+                $.post( "/api/getdataresize/{{season}}", function( data ) {
                     // console.log(data.results);
 
                     var color = Chart.helpers.color;

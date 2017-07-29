@@ -36,7 +36,7 @@ def checkNameQueryIndexes(query_indexes, name):
     return False
 
 
-def getDataFolowTime(name_database, fields):
+def getDataFolowTime(name_database, fields, resize):
     """
 
     :param name_database:
@@ -58,22 +58,26 @@ def getDataFolowTime(name_database, fields):
         
         length = db[name_database].doc_count() -3
         print ("number of point you want to ", pointsNeed)
-        if length >= pointsNeed:
-            # Rut gon
-            print("Rutgon")
-            step = int(length/pointsNeed)
-            points = int(length/step)
-            remainder = length - (step*points)
-            print("Step and remainder",step,remainder)
-            json_query = {"selector": {"rightNow": {"$gt": 0},"idCount":{"$mod":[step,remainder]}}, 
-                                                "fields": fields, "sort": [{"rightNow": "desc"}]}
+        if resize is True:
+            if length >= pointsNeed:
+                # Rut gon
+                print("Rutgon")
+                step = int(length/pointsNeed)
+                points = int(length/step)
+                remainder = length - (step*points)
+                print("Step and remainder",step,remainder)
+                json_query = {"selector": {"rightNow": {"$gt": 0},"idCount":{"$mod":[step,remainder]}}, 
+                                                    "fields": fields, "sort": [{"rightNow": "desc"}]}
 
-            docs = database_test_send.get_query_result(json_query['selector'], json_query['fields'],
-                                                   sort=json_query['sort'], raw_result=True)
+                docs = database_test_send.get_query_result(json_query['selector'], json_query['fields'],
+                                                       sort=json_query['sort'], raw_result=True)
+            else:
+                # Hien thi het
+                docs = database_test_send.get_query_result(json_query['selector'], json_query['fields'],
+                                                       sort=json_query['sort'], raw_result=True)
         else:
-            # Hien thi het
             docs = database_test_send.get_query_result(json_query['selector'], json_query['fields'],
-                                                   sort=json_query['sort'], raw_result=True)
+                                                       sort=json_query['sort'], raw_result=True)
 
         # data=[]
         # for doc in docs['docs']:
@@ -91,7 +95,7 @@ def getdatajson(namedatabase):
     """
     sensor_field = "payload"
     fields = ["_id", "rightNow", "type", sensor_field]
-    dataraw = getDataFolowTime(namedatabase, fields)
+    dataraw = getDataFolowTime(namedatabase, fields, False)
     if dataraw is {}:
         return "Error"
     # data = {}
@@ -105,6 +109,46 @@ def getdatajson(namedatabase):
     #     else: return "Error"
     return flask.jsonify(results=dataraw['docs'])
 
+@app.route('/api/getdataresize/<namedatabase>', methods=['GET', 'POST'])
+def getdataresize(namedatabase):
+    """
+
+    :param namedatabase:
+    :return:
+    """
+    json_value = {"value": [], }
+    fields = ["_id", "rightNow", "payload"]
+    dataraw = getDataFolowTime(namedatabase, fields, True)
+
+    if dataraw is {}:
+        return "Error"
+    dataraw = dataraw["docs"]
+    # return flask.jsonify(results=dataraw)
+    # Create the Shell Data for reponse POST methods
+    sampledata = requests.get(str(flask.request.url_root) + "api/newsampledata/" + str(namedatabase))
+    sampledata = json.loads(sampledata.text)
+
+    if 'results' in sampledata:
+        data = copy.deepcopy(sampledata["results"])
+        if data == 'Error':
+            return flask.jsonify(results="Error")
+
+        for node in data.keys():
+            for sensorName in data[node]['payload'].keys():
+                data[node]['payload'][sensorName]['payload'] = copy.deepcopy(json_value)
+                data[node]['time'] = []
+                for x in range(0, len(dataraw)):
+                    if node in dataraw[x]['payload'].keys():
+                        data[node]['payload'][sensorName].pop('value', None)
+                        data[node]['time'].append(dataraw[x]['rightNow'])
+                        if sensorName in dataraw[x]['payload'][node]['payload'].keys():
+                            data[node]['payload'][sensorName]['payload']["value"].append(
+                                dataraw[x]['payload'][node]['payload'][sensorName]['value'])
+                        else:
+                            data[node]['payload'][sensorName]['payload']["value"].append(0)
+        return flask.jsonify(results=data)
+    return flask.jsonify(results="Error")
+
 
 # return data for Seasons Page
 @app.route('/api/getalldata/<namedatabase>', methods=['GET', 'POST'])
@@ -116,7 +160,7 @@ def get_alldata(namedatabase):
     """
     json_value = {"value": [], }
     fields = ["_id", "rightNow", "payload"]
-    dataraw = getDataFolowTime(namedatabase, fields)
+    dataraw = getDataFolowTime(namedatabase, fields, False)
 
     if dataraw is {}:
         return "Error"
