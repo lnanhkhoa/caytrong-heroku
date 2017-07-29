@@ -1,9 +1,8 @@
 # coding=utf-8
 import os
+from flask import Flask, flash, session, render_template, request, jsonify
 from client import app
-from flask import flash, session, render_template, request
 
-app.secret_key = "sercet-Key"
 # session['logged_in'] = False
 
 
@@ -70,13 +69,13 @@ def contact():
     """
     return render_template("contact.html")
 
-@app.route('/session',methods=['POST'])
+@app.route('/sessions',methods=['POST'])
 def check_session():
     if request.method == 'POST':
-        if not session['logged_in']:
-            return "0"
-        return "1"
-    return "Error"
+        if not session.get('logged_in'):
+            return jsonify(results="0")
+        return jsonify(results="1")
+    return jsonify(results="Error")
 
 @app.route('/database')
 def database():

@@ -37,10 +37,10 @@
         }
         document.getElementById("nameWeb").innerHTML = liString;
       });
-      $.post( "/session", function( data ) {
-        console.log(data);
-        if (data == "1") {
-          $("#navbar ul[name=right]").append('<li><a href="/logout">Log Out</a></li>');
-        }
+      $.post( "/sessions", function( data ) {
+        //console.log(data);
+          if (data['results'] === "1") {
+            $("#navbar ul[name=right]").append('<li><a href="/logout">Log Out</a></li>');
+          }
       });
     </script>

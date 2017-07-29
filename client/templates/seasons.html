@@ -186,7 +186,7 @@
                 }
 
                 $.post( "/api/getalldata/{{season}}", function( data ) {
-                    console.log(data.results);
+                    // console.log(data.results);
 
                     var color = Chart.helpers.color;
 
@@ -217,7 +217,7 @@
                             },
                             title: {
                                 display: true,
-                                text: "Chart.js Line Chart - Stacked Area"
+                                text: ""//"Chart.js Line Chart - Stacked Area"
                             },
                             tooltips: {
                                 mode: 'index',
@@ -253,7 +253,7 @@
                     };
 
                     $(window).ready(function () {
-                        console.log("OK");
+                        // console.log("OK");
                         var ctx{{node}} = document.getElementById("canvas_{{node}}").getContext("2d");
                         window.myLine{{node}} = new Chart(ctx{{ node }}, barChartData{{ node }});
 
@@ -311,18 +311,25 @@
                                 'max': lengthData{{ node }}
                             }
                         });
+                        
+                        var sensor{{ node }} = Object.keys(data.results.{{node}}.payload);
+                        var labelSensor{{ node }} = [];
+                        for (var sensor in sensor{{ node }}){
+                            labelSensor{{ node }}.push(data.results.{{ node }}.payload[sensor{{ node }}[sensor]].name);
+                        }
 
                         dragSlider{{ node }}.noUiSlider.on('slide', function (values, callback) {
 
                             barChartData{{ node }}.data.labels = data.results.{{ node }}.time.slice(values[0], values[1]);
-                            var sensor = Object.keys(data.results.{{node}}.payload);
-                            barChartData{{ node }}.data.datasets.forEach(function (dataset, index) {
-                                dataset.data = data.results.{{ node }}.payload[sensor[index]].payload.value.slice(values[0], values[1]);
+                            barChartData{{ node }}.data.datasets.forEach(function (dataset) {
+                                   dataset.data = data.results.{{ node }}.payload[sensor{{ node }}[labelSensor{{ node }}.indexOf(dataset.label)]].payload.value.slice(values[0], values[1]);
                             });
                             window.myLine{{ node }}.update();
                         });
+
                         $('#list-{{ node }} input').on(' ifClicked ifChecked ifUnchecked ifDisabled ifEnabled ifDestroyed', function (event) {
                             var EventCheckbox1 = event.type.replace('if', '').toLocaleLowerCase();
+                            
                             switch (this.id){
 
                             case '{{ node }}-flat-checkbox-all':
@@ -333,6 +340,18 @@
                                 break;
 
                             default:
+                                //Get status of checkbox
+                                var selected = [];
+                                $('#list-{{ node }} input[type=checkbox]:checked').each(function(){
+                                    var $this = $(this).attr('id');
+                                    selected.push($this);
+                                });
+                                console.log(selected);
+                                if (selected.length === 1) {
+                                    if(selected[0].search('all')>0)
+                                      $('#list-{{ node }} input').iCheck('uncheck');  
+                                }
+
                                 var index = parseInt(this.id.replace("{{ node }}-flat-checkbox-",''))-1;
                                 var sensor = Object.keys(data.results.{{node}}.payload);
                                 if(EventCheckbox1 === "checked"){
@@ -411,7 +430,7 @@
                             }
                             
                             bigArray = bigArray.concat([ArraySample]);
-                            delete ArraySample;
+                            //delete ArraySample;
 
                         });
 

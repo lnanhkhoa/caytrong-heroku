@@ -17,11 +17,11 @@ from client import app
 from client import db
 
 #
-db.connect()  # the connection spends 1.8s
-purpose = "goi database test_sending"
-dataForQuery = {'selector': {"_id": {"$gt": 0}}, 'fields': ["_id", "_rev", "sensor_light", "sensor_temperature"],
-                'sort': [{"_id": "asc"}]}
-
+# db.connect()  # the connection spends 1.8s
+# purpose = "goi database test_sending"
+# dataForQuery = {'selector': {"_id": {"$gt": 0}}, 'fields': ["_id", "_rev", "sensor_light", "sensor_temperature"],
+#                 'sort': [{"_id": "asc"}]}
+pointsNeed = 200
 
 def checkNameQueryIndexes(query_indexes, name):
     """
@@ -43,10 +43,10 @@ def getDataFolowTime(name_database, fields):
     :param fields:
     :return:
     """
+    global pointsNeed
+
     json_query = {"selector": {"rightNow": {"$gt": 0}}, "fields": fields, "sort": [{"rightNow": "desc"}]}
-    if not str(name_database) in db.all_dbs():
-        db.create_database(name_database)
-    else:
+    if str(name_database) in db.all_dbs():
         # print "This Database exists!\n"
         database_test_send = db[name_database]
         query_indexes = database_test_send.get_query_indexes(raw_result=True)
@@ -55,7 +55,24 @@ def getDataFolowTime(name_database, fields):
         if not checkNameQueryIndexes(query_indexes, "time"):
             database_test_send.create_query_index(design_document_id="_design/time", index_name="rightNow",
                                                   index_type="json", fields=[{"rightNow": "desc"}])
-        docs = database_test_send.get_query_result(json_query['selector'], json_query['fields'],
+        
+        length = db[name_database].doc_count() -3
+        print ("number of point you want to ", pointsNeed)
+        if length >= pointsNeed:
+            # Rut gon
+            print("Rutgon")
+            step = int(length/pointsNeed)
+            points = int(length/step)
+            remainder = length - (step*points)
+            print("Step and remainder",step,remainder)
+            json_query = {"selector": {"rightNow": {"$gt": 0},"idCount":{"$mod":[step,remainder]}}, 
+                                                "fields": fields, "sort": [{"rightNow": "desc"}]}
+
+            docs = database_test_send.get_query_result(json_query['selector'], json_query['fields'],
+                                                   sort=json_query['sort'], raw_result=True)
+        else:
+            # Hien thi het
+            docs = database_test_send.get_query_result(json_query['selector'], json_query['fields'],
                                                    sort=json_query['sort'], raw_result=True)
 
         # data=[]
@@ -74,7 +91,9 @@ def getdatajson(namedatabase):
     """
     sensor_field = "payload"
     fields = ["_id", "rightNow", "type", sensor_field]
-    dataraw = getDataFolowTime(namedatabase, fields)['docs']
+    dataraw = getDataFolowTime(namedatabase, fields)
+    if dataraw is {}:
+        return "Error"
     # data = {}
 
     # for Sensor in dataraw[0]['payload'][Node].keys():
@@ -84,7 +103,7 @@ def getdatajson(namedatabase):
     #             data[Node][Sensor]["labels"].append(dataraw[x]['rightNow'])
     #             data[Node][Sensor]["value"].append(dataraw[x]['payload'][Node][Sensor])
     #     else: return "Error"
-    return flask.jsonify(results=dataraw)
+    return flask.jsonify(results=dataraw['docs'])
 
 
 # return data for Seasons Page

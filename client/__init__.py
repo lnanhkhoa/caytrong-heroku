@@ -44,9 +44,13 @@ credentialsData = credentials['credentials']
 serviceUsername = credentialsData['username']
 servicePassword = credentialsData['password']
 serviceURL = credentialsData['url']
-db = cloudant.client.Cloudant(serviceUsername, servicePassword, url=serviceURL)
+
+# httpAdapter = HTTPAdapter(pool_connections=35, pool_maxsize=100)
+
+db = cloudant.client.Cloudant(serviceUsername, servicePassword, url=serviceURL, connect=True)
 
 app = Flask(__name__)
+app.secret_key = "sercet-Key"
 
 import client.welcome
 import client.api
