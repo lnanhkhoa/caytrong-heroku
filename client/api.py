@@ -56,7 +56,7 @@ def getDataFolowTime(name_database, fields, resize):
             database_test_send.create_query_index(design_document_id="_design/time", index_name="rightNow",
                                                   index_type="json", fields=[{"rightNow": "desc"}])
         
-        length = db[name_database].doc_count() -3
+        length = db[name_database].doc_count() -len(db[str(namelocal)].list_design_documents()
         print ("number of point you want to ", pointsNeed)
         if resize is True:
             if length >= pointsNeed:
