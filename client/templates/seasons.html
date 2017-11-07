@@ -187,18 +187,20 @@
 
                 $.post( "/api/getdataresize/{{season}}", function( data ) {
                     
-                    for(node in data.results){
-                        for(sensor in data.results[node].payload){
-                            if(data.results[node].payload[sensor].name === "uV"){
-                                data.results[node].payload[sensor].payload.value.forEach(function(argument) {
-                                    argument = Number(argument)*100;
-                                    argument = argument.toFixed(2);
-                                });
+                    function constructor(){
+                        for(node in data.results){
+                            for(sensor in data.results[node].payload){
+                                if(data.results[node].payload[sensor].name === "uV"){
+                                    data.results[node].payload[sensor].payload.value.forEach(function(argument) {
+                                        argument = Number(argument)*100;
+                                        argument = argument.toFixed(2);
+                                    });
+                                }
                             }
                         }
                     }
-
-
+                    
+                    constructor();
                     var color = Chart.helpers.color;
                     dataset = function(Node, sensor){
                         var dataResults = data.results[Node].payload;
