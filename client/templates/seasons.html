@@ -105,7 +105,7 @@
                                                     </li>
                                                     <li class="licheckbox">
                                                         <input tabindex="4" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-4" checked>
-                                                        <label name="label4" for="{{ item }}-flat-checkbox-4">uV (mW/cm2)</label>
+                                                        <label name="label4" for="{{ item }}-flat-checkbox-4">uV (mW/dm2)</label>
                                                     </li>
                                                     <li class="licheckbox">
                                                         <input tabindex="5" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-5" checked>
@@ -186,10 +186,20 @@
                 }
 
                 $.post( "/api/getdataresize/{{season}}", function( data ) {
-                    // console.log(data.results);
+                    
+                    for(node in data.results){
+                        for(sensor in data.results[node].payload){
+                            if(data.results[node].payload[sensor].name === "uV"){
+                                data.results[node].payload[sensor].payload.value.forEach(function(argument) {
+                                    argument = Number(argument)*100;
+                                    argument = argument.toFixed(2);
+                                });
+                            }
+                        }
+                    }
+
 
                     var color = Chart.helpers.color;
-
                     dataset = function(Node, sensor){
                         var dataResults = data.results[Node].payload;
                         var datasetReturn = [];
