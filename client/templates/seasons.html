@@ -100,19 +100,19 @@
                                                         <label name="label2" for="{{ item }}-flat-checkbox-2">Soil Humidity (%RH)</label>
                                                     </li>
                                                     <li class="licheckbox">
-                                                        <input tabindex="3" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-3" checked>
+                                                        <input tabindex="3" type="checkbox" name="check3" id="{{ item }}-flat-checkbox-3" checked>
                                                         <label name="label3" for="{{ item }}-flat-checkbox-3">Soil Temperature (°C)</label>
                                                     </li>
                                                     <li class="licheckbox">
-                                                        <input tabindex="4" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-4" checked>
+                                                        <input tabindex="4" type="checkbox" name="check4" id="{{ item }}-flat-checkbox-4" checked>
                                                         <label name="label4" for="{{ item }}-flat-checkbox-4">uV (mW/dm2)</label>
                                                     </li>
                                                     <li class="licheckbox">
-                                                        <input tabindex="5" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-5" checked>
+                                                        <input tabindex="5" type="checkbox" name="check5" id="{{ item }}-flat-checkbox-5" checked>
                                                         <label name="label5" for="{{ item }}-flat-checkbox-5">Air Humidity (%RH)</label>
                                                     </li>
                                                     <li class="licheckbox">
-                                                        <input tabindex="6" type="checkbox" name="check2" id="{{ item }}-flat-checkbox-6" checked>
+                                                        <input tabindex="6" type="checkbox" name="check6" id="{{ item }}-flat-checkbox-6" checked>
                                                         <label name="label6" for="{{ item }}-flat-checkbox-6">Air Temperature (°C)</label>
                                                     </li>
                                                 </ul>
@@ -213,7 +213,7 @@
                     };
 
                     {% for node in items %}
-
+                    // Default checkall
                     var barChartData{{node}} = {
                         type:'line',
                         data: {
@@ -382,8 +382,14 @@
                             window.myLine{{ node }}.update();
                         });
                     });
-                    {% endfor %}
 
+                    // Default Display Chart
+                    $('#list-{{ node }} input[name=checkall]').iCheck('uncheck');
+                    $('#list-{{ node }} input[name=check3]').iCheck('check');
+                    $('#list-{{ node }} input[name=check4]').iCheck('check');
+                    $('#list-{{ node }} input[name=check6]').iCheck('check');
+
+                    {% endfor %}
                 });
                 
                 $('#downloadjson').click(function(){
