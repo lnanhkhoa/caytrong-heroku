@@ -139,14 +139,15 @@ def getdataresize(namedatabase):
                     data[node]['payload'][sensorName]['payload'] = copy.deepcopy(json_value)
                     data[node]['time'] = []
                     for x in range(0, len(dataraw)):
-                        if node in dataraw[x]['payload'].keys():
-                            data[node]['payload'][sensorName].pop('value', None)
-                            data[node]['time'].append(dataraw[x]['rightNow'])
-                            if sensorName in dataraw[x]['payload'][node]['payload'].keys():
-                                data[node]['payload'][sensorName]['payload']["value"].append(
-                                    dataraw[x]['payload'][node]['payload'][sensorName]['value'])
-                            else:
-                                data[node]['payload'][sensorName]['payload']["value"].append(0)
+                        if 'payload' in dataraw[x].keys():
+                            if node in dataraw[x]['payload'].keys():
+                                data[node]['payload'][sensorName].pop('value', None)
+                                data[node]['time'].append(dataraw[x]['rightNow'])
+                                if sensorName in dataraw[x]['payload'][node]['payload'].keys():
+                                    data[node]['payload'][sensorName]['payload']["value"].append(
+                                        dataraw[x]['payload'][node]['payload'][sensorName]['value'])
+                                else:
+                                    data[node]['payload'][sensorName]['payload']["value"].append(0)
         return flask.jsonify(results=data)
     return flask.jsonify(results="Error")
 
